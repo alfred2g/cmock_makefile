@@ -10,7 +10,7 @@ It tests 2 lwip functions for FreeRTOS
 ## How To Run
 
 ### Linux , Windows WSL
-make
-make run
-make coverage
-make clean
+* make
+* make run
+* make coverage
+* make clean
