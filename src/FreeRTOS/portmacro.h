@@ -96,6 +96,9 @@
     #define portNOP()    __asm volatile ( "NOP" );
 /*-----------------------------------------------------------*/
 
+    extern void vPortConfigAssert( uint8_t result );
+    #define configASSERT( X )    vPortConfigAssert( X );
+
 
 /* Scheduler utilities. */
 

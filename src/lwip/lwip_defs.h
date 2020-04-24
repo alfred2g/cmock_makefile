@@ -41,7 +41,7 @@ typedef enum
     /** Illegal argument.        */
     ERR_ARG = -16
 } err_enum_t;
-typedef unsigned char err_t;
+typedef char err_t;
 struct _sys_mbox
 {
     QueueHandle_t xMbox;

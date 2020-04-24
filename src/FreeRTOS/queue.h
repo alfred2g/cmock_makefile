@@ -77,9 +77,9 @@
  *  BaseType_t xQueueReceive( QueueHandle_t xQueue,
  *                            void * const pvBuffer,
  *                            TickType_t xTicksToWait ) PRIVILEGED_FUNCTION;
- *  UBaseType_t uxQueueMessagesWaiting( const QueueHandle_t xQueue ) PRIVILEGED_FUNCTION;
- *  UBaseType_t uxQueueSpacesAvailable( const QueueHandle_t xQueue ) PRIVILEGED_FUNCTION;
  *  */
+    UBaseType_t uxQueueMessagesWaiting( const QueueHandle_t xQueue );
+    UBaseType_t uxQueueSpacesAvailable( const QueueHandle_t xQueue );
     void vQueueDelete( QueueHandle_t xQueue );
 
 /*
