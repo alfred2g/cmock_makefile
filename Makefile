@@ -1,5 +1,5 @@
-CC := /usr/local/bin/gcc
-GCOV := /usr/local/bin/gcov
+#CC := /usr/local/bin/gcc
+#GCOV := /usr/local/bin/gcov
 
 EXECUTABLE=cmock_test
 ROOT_DIR ?= $(shell pwd)
