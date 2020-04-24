@@ -1,3 +1,6 @@
+CC := /usr/local/bin/gcc
+GCOV := /usr/local/bin/gcov
+
 EXECUTABLE=cmock_test
 ROOT_DIR ?= $(shell pwd)
 
@@ -28,8 +31,9 @@ LWIP_DIR ?= ${SRC_DIR}/lwip
 TEST_DIR ?= test
 
 INCLUDE_DIR ?= -I ${CMOCK_INCLUDE_DIR} -I ${UNITY_INCLUDE_DIR} -I ${FREE_RTOS_DIR} -I ${MOCKS_DIR} -I ${LWIP_DIR}
+CODE_COVERAGE ?= -fprofile-arcs -ftest-coverage -fprofile-generate
 
-.PHONY: all clean directories mocks
+.PHONY: all clean directories mocks coverage
 
 all:${LIB_DIR}/libcmock.so  ${LIB_DIR}/libunity.so directories mocks ${BIN_DIR}/${EXECUTABLE} ${LIB_DIR}/libsys_arch.so
 
@@ -56,7 +60,7 @@ ${LIB_DIR}/mock_task.o :  ${MOCKS_DIR}/mock_task.c mocks Makefile
 	${CC} -c $< -o $@ ${INCLUDE_DIR} -fPIC
 
 ${LIB_DIR}/libsys_arch.so: ${LWIP_DIR}/sys_arch.c ${LIB_DIR}/mock_task.o ${LIB_DIR}/mock_queue.o
-	${CC} -o $@  -shared -fPIC $+  ${INCLUDE_DIR} 
+	${CC} -o $@  -shared -fPIC $+  ${INCLUDE_DIR}  ${CODE_COVERAGE}  -lgcov
 
 ${GEN_DIR}/${EXECUTABLE}_test_runner.c : mocks Makefile
 	ruby ${UNITY_BIN_DIR}/generate_test_runner.rb   ${CONFIGURATION_DIR}/project.yml ${TEST_DIR}/lwip_test.c ${GEN_DIR}/${EXECUTABLE}_test_runner.c
@@ -66,3 +70,9 @@ ${BIN_DIR}/${EXECUTABLE}: ${GEN_DIR}/${EXECUTABLE}_test_runner.c ${TEST_DIR}/lwi
 
 clean:
 	rm -rf build
+
+coverage:
+	${BIN_DIR}/${EXECUTABLE}
+	lcov --base-directory . --directory . -c --rc lcov_branch_coverage=1 --rc genhtml_branch_coverage=1  -o build/cmock_test.info
+	genhtml build/cmock_test.info --branch-coverage --output-directory build/coverage_html
+#lcov --remove cmock_test.info "/usr*" --o cmock_test.info 
