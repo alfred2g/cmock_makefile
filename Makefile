@@ -33,7 +33,7 @@ TEST_DIR ?= test
 INCLUDE_DIR ?= -I ${CMOCK_INCLUDE_DIR} -I ${UNITY_INCLUDE_DIR} -I ${FREE_RTOS_DIR} -I ${MOCKS_DIR} -I ${LWIP_DIR}
 CODE_COVERAGE ?= -fprofile-arcs -ftest-coverage -fprofile-generate
 
-.PHONY: all clean directories mocks coverage
+.PHONY: all clean directories mocks coverage run
 
 all:${LIB_DIR}/libcmock.so  ${LIB_DIR}/libunity.so directories mocks ${BIN_DIR}/${EXECUTABLE} ${LIB_DIR}/libsys_arch.so
 
@@ -69,10 +69,12 @@ ${BIN_DIR}/${EXECUTABLE}: ${GEN_DIR}/${EXECUTABLE}_test_runner.c ${TEST_DIR}/lwi
 	${CC} -o $@  $+  ${INCLUDE_DIR} -L ${LIB_DIR} -Wl,-rpath,${LIB_DIR} -lunity -lcmock -lsys_arch
 
 clean:
-	rm -rf build
-
-coverage:
+	-rm -rf build
+	-rm sys_arch.gcda  sys_arch.gcno
+run:
 	${BIN_DIR}/${EXECUTABLE}
+
+coverage: run
 	lcov --base-directory . --directory . -c --rc lcov_branch_coverage=1 --rc genhtml_branch_coverage=1  -o build/cmock_test.info
 	genhtml build/cmock_test.info --branch-coverage --output-directory build/coverage_html
 #lcov --remove cmock_test.info "/usr*" --o cmock_test.info 
